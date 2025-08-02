@@ -1,0 +1,32 @@
+@startuml stream bytes
+
+
+package org.x96.sys.foundation {
+  package buzz {
+    exception Buzz {}
+    package io {
+      exception BuzzEmptyPayload extends org.x96.sys.foundation.buzz.Buzz
+      exception BuzzStreamOverflow extends org.x96.sys.foundation.buzz.Buzz
+      exception BuzzStreamUnderflow extends org.x96.sys.foundation.buzz.Buzz
+    }
+  }
+  package io {
+    class ByteStream {
+      - byte[] bytes
+      --
+      + {static} raw(byte[] bytes): ByteStream
+      + {static} wrapped(byte[] bytes): ByteStream
+      --
+      + length(): int
+      + at(int pos): byte
+      --
+      - ByteStream(byte[] bytes)
+      - {static} byte[] addSentinels(byte[] bytes)
+    }
+
+    ByteStream ..> BuzzEmptyPayload : throws
+    ByteStream ..> BuzzStreamOverflow : throws
+    ByteStream ..> BuzzStreamUnderflow : throws
+  }
+}
+@enduml
