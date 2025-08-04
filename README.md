@@ -7,47 +7,44 @@
 ### build
 
 ```bash
-javac -d run $(find src/main -name "*.java")
+make
 ```
 
 ### distro
 
 ```bash
-jar cf org.x96.sys.foundation.io.jar -C run .
+make distro
 ```
 
 ### build && test
 
 ```bash
-javac -cp lib/j.jar -d test $(find src -name "*.java") && java -jar lib/j.jar --class-path test --scan-class-path
+make test
 ```
 
 ### clean
 
 ```bash
-rm -rf lib run test "*.jar"
+make clean
 ```
 
 ### Format
 
 ```bash
-java -jar gjf.jar --aosp --replace src/**/*.java
+make format
 ```
 
 ### test and watch
 
 ```bash
-find . -name "*.java" | entr -c bash -c 'clear && javac -cp lib/j.jar -d test $(find src -name "*.java") && java -jar lib/j.jar --class-path test --scan-class-path'
+make watch-test
 ```
 
 ### test and watch specific
 
 ```bash
-find . -name "*.java" | entr -c bash -c ' javac -cp lib/j.jar -d test $(find src -name "*.java") &&
-java -jar lib/j.jar \
-  --class-path test \
-  --select "method:org.x96.sys.foundation.io.ByteStreamTest#happySlowPerformance"
-'
+make watch-test-specific
+make watch-test-specific TEST_METHOD=org.x96.sys.foundation.io.ByteStreamTest\#happyPerformance
 ```
 
 ### Downloads
