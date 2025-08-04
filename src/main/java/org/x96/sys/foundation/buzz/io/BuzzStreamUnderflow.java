@@ -11,7 +11,9 @@ public class BuzzStreamUnderflow extends Buzz {
 
     private static String explain(Integer pos) {
         return """
-                Access before start.
-                > Attempted index: %d""".formatted(pos);
+        Access before start.
+        > Attempted index: %d\
+        """
+                .formatted(pos);
     }
 }

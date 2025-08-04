@@ -11,8 +11,7 @@ public class ByteStream {
     private final byte[] bytes;
 
     private ByteStream(byte[] bytes) {
-        if (bytes.length == 0)
-            throw new BuzzEmptyPayload();
+        if (bytes.length == 0) throw new BuzzEmptyPayload();
         this.bytes = bytes;
     }
 

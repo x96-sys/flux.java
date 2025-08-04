@@ -35,7 +35,8 @@ public class ByteStreamTest {
                 """
                         \uD83E\uDD95 [0xF1]
                         \uD83D\uDC1D [BuzzEmptyPayload]
-                        \uD83C\uDF35 > ByteStream can not be empty 🙅""",
+                        \uD83C\uDF35 > ByteStream can't be empty 🙅\
+                        """,
                 e.getLocalizedMessage());
     }
 
@@ -51,7 +52,8 @@ public class ByteStreamTest {
                         \uD83D\uDC1D [BuzzStreamOverflow]
                         \uD83C\uDF35 > Access beyond bounds.
                         > Limit: 0
-                        > Attempted index: 1""",
+                        > Attempted index: 1\
+                        """,
                 e.getLocalizedMessage());
     }
 
@@ -65,7 +67,8 @@ public class ByteStreamTest {
                         \uD83E\uDD95 [0xF3]
                         \uD83D\uDC1D [BuzzStreamUnderflow]
                         \uD83C\uDF35 > Access before start.
-                        > Attempted index: -1""",
+                        > Attempted index: -1\
+                        """,
                 e.getLocalizedMessage());
     }
 

@@ -11,8 +11,10 @@ public class BuzzStreamOverflow extends Buzz {
 
     private static String explain(Integer pos, int length) {
         return """
-                Access beyond bounds.
-                > Limit: %d
-                > Attempted index: %d""".formatted(length, pos);
+        Access beyond bounds.
+        > Limit: %d
+        > Attempted index: %d\
+        """
+                .formatted(length, pos);
     }
 }

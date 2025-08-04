@@ -10,28 +10,10 @@
 make
 ```
 
-### distro
-
-```bash
-make distro
-```
-
 ### build && test
 
 ```bash
 make test
-```
-
-### clean
-
-```bash
-make clean
-```
-
-### Format
-
-```bash
-make format
 ```
 
 ### test and watch
@@ -43,8 +25,31 @@ make watch-test
 ### test and watch specific
 
 ```bash
-make watch-test-specific
 make watch-test-specific TEST_METHOD=org.x96.sys.foundation.io.ByteStreamTest\#happyPerformance
+```
+
+### Format
+
+```bash
+make format
+```
+
+### distro lib
+
+```bash
+make distro
+```
+
+### distro cli
+
+```bash
+make distro-cli
+```
+
+### clean
+
+```bash
+make clean
 ```
 
 ### Downloads
@@ -52,12 +57,80 @@ make watch-test-specific TEST_METHOD=org.x96.sys.foundation.io.ByteStreamTest\#h
 ### junit-platform-console-standalone
 
 ```bash
-mkdir lib
-wget https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.12.1/junit-platform-console-standalone-1.12.1.jar -O lib/j.jar
+make download-junit
 ```
 
 ### google-java-format
 
 ```bash
-curl -L -o gjf.jar https://github.com/google/google-java-format/releases/download/v1.28.0/google-java-format-1.28.0-all-deps.jar
+make download-gjf
+```
+
+## CLI
+
+### Usage
+
+```bash
+java -jar org.x96.sys.foundation.io.cli.jar 'ceci&sofi'
+```
+
+```output
+Byte 0: 0x63
+Byte 1: 0x65
+Byte 2: 0x63
+Byte 3: 0x69
+Byte 4: 0x26
+Byte 5: 0x73
+Byte 6: 0x6F
+Byte 7: 0x66
+Byte 8: 0x69
+```
+
+### Accessing specific bytes
+
+```bash
+java -jar org.x96.sys.foundation.io.cli.jar 0 'sofi&ceci'
+```
+
+```output
+Byte 0: 0x73
+```
+
+### Underflow
+
+```bash
+java -jar org.x96.sys.foundation.io.cli.jar -1 'underflow'
+```
+
+```output
+🦕 [0xF3]
+🐝 [BuzzStreamUnderflow]
+🌵 > Access before start.
+> Attempted index: -1
+```
+
+### Overflow
+
+```bash
+java -jar org.x96.sys.foundation.io.cli.jar 9 'overflow'
+```
+
+```output
+🦕 [0xF2]
+🐝 [BuzzStreamOverflow]
+🌵 > Access beyond bounds.
+> Limit: 7
+> Attempted index: 9
+```
+
+### Invalid input
+
+```bash
+java -jar org.x96.sys.foundation.io.cli.jar 0 ''
+```
+
+```output
+🦕 [0xF1]
+🐝 [BuzzEmptyPayload]
+🌵 > ByteStream can not be empty 🙅
 ```
