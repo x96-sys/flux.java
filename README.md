@@ -1,6 +1,29 @@
 # Flux
 
-[Implementation of](https://github.com/x96-sys/flux)
+Java implementation of the [Flux](https://github.com/x96-sys/flux) byte stream
+processing library.
+
+## About
+
+Flux is a Java library that provides efficient byte stream processing with
+comprehensive error handling. It includes both a library component and a
+command-line interface (CLI) for interactive byte manipulation.
+
+## Features
+
+- **ByteStream**: Core byte stream processing with bounds checking
+- **Buzz Error System**: Comprehensive error handling with specific exception
+  types
+- **CLI Interface**: Interactive command-line tool for byte inspection
+- **Full Test Coverage**: Comprehensive test suite with JaCoCo coverage
+  reporting
+
+## Quick Start
+
+### Prerequisites
+
+- Java 8 or higher
+- Make (for build automation)
 
 ## Scripts
 
@@ -22,13 +45,19 @@ make test
 make watch-test
 ```
 
+### coverage report
+
+```bash
+make coverage
+```
+
 ### test and watch specific
 
 ```bash
 make watch-test-specific TEST_METHOD=org.x96.sys.foundation.io.ByteStreamTest\#happyPerformance
 ```
 
-### Format
+### format
 
 ```bash
 make format
@@ -52,23 +81,97 @@ make distro-cli
 make clean
 ```
 
-### Downloads
+### release management
 
-### junit-platform-console-standalone
+#### bake version
+
+```bash
+make version
+```
+
+### downloads dependencies
+
+#### junit-platform-console-standalone
 
 ```bash
 make download-junit
 ```
 
-### google-java-format
+#### google-java-format
 
 ```bash
 make download-gjf
 ```
 
+#### JaCoCo (coverage reporting)
+
+```bash
+make download-jacoco
+```
+
+## Library Usage
+
+### Core Components
+
+The Flux library provides several key components:
+
+- **ByteStream**: Main class for byte stream operations
+- **Buzz**: Base exception class for error handling
+- **BuzzEmptyPayload**: Exception for empty stream operations
+- **BuzzStreamOverflow**: Exception for out-of-bounds access (beyond end)
+- **BuzzStreamUnderflow**: Exception for out-of-bounds access (before start)
+
+### Example
+
+```java
+import org.x96.sys.foundation.io.ByteStream;
+import org.x96.sys.foundation.buzz.Buzz;
+
+public class Example {
+    public static void main(String[] args) {
+        try {
+            ByteStream stream = ByteStream.raw("Hello".getBytes());
+
+            // Access bytes safely
+            for (int i = 0; i < stream.length(); i++) {
+                int value = stream.at(i);
+                System.out.printf("Byte %d: 0x%X%n", i, value);
+            }
+        } catch (Buzz e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
+}
+```
+
 ## CLI
 
+The Flux CLI provides an interactive way to inspect byte streams from the
+command line.
+
+### Installation
+
+Build the CLI executable:
+
+```bash
+make distro-cli
+```
+
+This creates `org.x96.sys.foundation.io.cli.jar`.
+
 ### Usage
+
+#### Display version
+
+```bash
+java -jar org.x96.sys.foundation.io.cli.jar -v
+```
+
+```output
+Flux CLI v1.0.0
+```
+
+#### Process entire string
 
 ```bash
 java -jar org.x96.sys.foundation.io.cli.jar 'ceci&sofi'
@@ -96,7 +199,11 @@ java -jar org.x96.sys.foundation.io.cli.jar 0 'sofi&ceci'
 Byte 0: 0x73
 ```
 
-### Underflow
+### Error Handling
+
+The CLI provides detailed error messages for various scenarios:
+
+#### Underflow
 
 ```bash
 java -jar org.x96.sys.foundation.io.cli.jar -1 'underflow'
@@ -109,7 +216,7 @@ java -jar org.x96.sys.foundation.io.cli.jar -1 'underflow'
 > Attempted index: -1
 ```
 
-### Overflow
+#### Overflow
 
 ```bash
 java -jar org.x96.sys.foundation.io.cli.jar 9 'overflow'
@@ -123,7 +230,7 @@ java -jar org.x96.sys.foundation.io.cli.jar 9 'overflow'
 > Attempted index: 9
 ```
 
-### Invalid input
+#### Empty payload
 
 ```bash
 java -jar org.x96.sys.foundation.io.cli.jar 0 ''

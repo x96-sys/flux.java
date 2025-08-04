@@ -1,3 +1,6 @@
+VERSION=$(shell git describe --tags --always)
+VERSION_FLUX_JAVA_FILE=src/main/java/org/x96/sys/foundation/io/Flux.java
+
 # Diretórios
 SRC_MAIN=src/main/java
 SRC_CLI=src/cli/java
@@ -7,11 +10,13 @@ OUT_CLASSES=out
 TEST_OUT=test
 LIB_DIR=lib
 JUNIT_JAR=$(LIB_DIR)/j.jar
-FORMATTER_JAR=gjf.jar
+
+TOOLS_DIR=tools
+FORMATTER_JAR=$(TOOLS_DIR)/gjf.jar
 
 JACOCO_AGENT_JAR=$(LIB_DIR)/jacocoagent.jar
 JACOCO_CLI_JAR=$(LIB_DIR)/jacococli.jar
-JACOCO_EXEC=jacoco.jar
+JACOCO_EXEC=$(TOOLS_DIR)/jacoco.jar
 JACOCO_REPORT_DIR=coverage-report
 
 # Artefato distribuível
@@ -19,6 +24,7 @@ DISTRO_JAR=org.x96.sys.foundation.io.jar
 
 # Empacotar a CLI em um JAR executável
 CLI_JAR=org.x96.sys.foundation.io.cli.jar
+
 
 # Default
 .PHONY: all
@@ -43,14 +49,16 @@ run: cli
 
 # Compilar e rodar testes
 .PHONY: test
-test:
-	javac -cp $(JUNIT_JAR) -d $(TEST_OUT) $(shell find src -name "*.java")
-	java -jar $(JUNIT_JAR) --class-path $(TEST_OUT) --scan-class-path
+test: lib
+	mkdir -p $(TEST_OUT)
+	javac -cp $(OUT_CLASSES):$(JUNIT_JAR) -d $(TEST_OUT) $(shell find src/test -name "*.java")
+	java -jar $(JUNIT_JAR) --class-path $(OUT_CLASSES):$(TEST_OUT) --scan-class-path
 
 # Limpeza
 .PHONY: clean
 clean:
 	rm -rf $(OUT_LIB) $(OUT_CLI) $(TEST_OUT) $(DISTRO_JAR) $(CLI_JAR)
+	rm -rf $(VERSION_FLUX_JAVA_FILE) $(JACOCO_REPORT_DIR) $(OUT_CLASSES) $(TOOLS_DIR)
 
 # Formatador
 .PHONY: format
@@ -59,8 +67,8 @@ format:
 
 # Empacotar a lib
 .PHONY: distro
-distro: lib
-	jar cf $(DISTRO_JAR) -C $(OUT_LIB) .
+distro: version lib
+	jar cf $(DISTRO_JAR) -C $(OUT_CLASSES) .
 
 # Teste com watch
 .PHONY: watch-test
@@ -100,8 +108,19 @@ report:
 .PHONY: distro-cli
 distro-cli: cli
 	echo "Main-Class: org.x96.sys.foundation.io.CLI" > manifest.txt
-	jar cfm $(CLI_JAR) manifest.txt -C $(OUT_CLI) . -C $(OUT_LIB) .
+	jar cfm $(CLI_JAR) manifest.txt -C $(OUT_CLI) . -C $(OUT_CLASSES) .
 	rm manifest.txt
+
+
+.PHONY: version
+version:
+	echo "package org.x96.sys.foundation.io;" > $(VERSION_FLUX_JAVA_FILE)
+	echo "public class Flux {" >> $(VERSION_FLUX_JAVA_FILE)
+	echo "  public static final String VERSION = \"$(VERSION)\";" >> $(VERSION_FLUX_JAVA_FILE)
+	echo "  private Flux() {" >> $(VERSION_FLUX_JAVA_FILE)
+	echo "    throw new AssertionError(\"Not instantiable\");" >> $(VERSION_FLUX_JAVA_FILE)
+	echo "  }" >> $(VERSION_FLUX_JAVA_FILE)
+	echo "}" >> $(VERSION_FLUX_JAVA_FILE)
 
 # Downloads
 .PHONY: download-junit
@@ -111,10 +130,12 @@ download-junit:
 
 .PHONY: download-gjf
 download-gjf:
+	mkdir -p $(TOOLS_DIR)
 	curl -L -o $(FORMATTER_JAR) https://github.com/google/google-java-format/releases/download/v1.28.0/google-java-format-1.28.0-all-deps.jar
 
 .PHONY: download-jacoco
 download-jacoco:
+	mkdir -p $(TOOLS_DIR)
 	mkdir -p $(LIB_DIR)
 	curl -L -o $(JACOCO_CLI_JAR) https://maven.org/maven2/org/jacoco/org.jacoco.cli/0.8.13/org.jacoco.cli-0.8.13-nodeps.jar
 	curl -L -o $(JACOCO_AGENT_JAR) https://maven.org/maven2/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar

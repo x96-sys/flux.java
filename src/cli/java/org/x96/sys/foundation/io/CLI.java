@@ -3,9 +3,16 @@ package org.x96.sys.foundation.io;
 import org.x96.sys.foundation.buzz.Buzz;
 
 public class CLI {
+
     public static void main(String[] args) {
         if (args.length == 0 || args.length > 2) {
             printUsage();
+        }
+
+        // Handle version flag
+        if (args.length == 1 && ("-v".equals(args[0]) || "--version".equals(args[0]))) {
+            printVersion();
+            return;
         }
 
         try {
@@ -25,10 +32,16 @@ public class CLI {
     }
 
     private static void printUsage() {
+        printVersion();
         System.err.println("Usage:");
-        System.err.println("  java Main <message>");
-        System.err.println("  java Main <index> <message>");
+        System.err.println("  java -jar org.x96.sys.foundation.io.cli.jar <message>");
+        System.err.println("  java -jar org.x96.sys.foundation.io.cli.jar <index> <message>");
+        System.err.println("  java -jar org.x96.sys.foundation.io.cli.jar -v|--version");
         System.exit(1);
+    }
+
+    private static void printVersion() {
+        System.out.println("Flux CLI " + Flux.VERSION);
     }
 
     private static ByteStream happens(String[] args) {
@@ -49,6 +62,6 @@ public class CLI {
     }
 
     private static String fHex(int value) {
-        return String.format("0x%02X", value);
+        return String.format("0x%X", value);
     }
 }

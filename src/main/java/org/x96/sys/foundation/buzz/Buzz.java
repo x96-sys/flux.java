@@ -7,7 +7,7 @@ public class Buzz extends RuntimeException {
     public static final String ANSI_GREEN = "\u001B[32m";
 
     private static final String[] BUGS = {
-            "🐞", "🕷️", "🪲", "🐜", "🦟", "🐝", "🦋", "🦖", "🦕", "🌵"
+        "🐞", "🕷️", "🪲", "🐜", "🦟", "🐝", "🦋", "🦖", "🦕", "🌵"
     };
 
     protected Buzz(int code, String bee, String msg, Throwable cause) {
