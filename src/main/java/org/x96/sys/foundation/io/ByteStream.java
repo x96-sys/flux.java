@@ -11,7 +11,8 @@ public class ByteStream {
     private final byte[] bytes;
 
     private ByteStream(byte[] bytes) {
-        if (bytes.length == 0) throw new BuzzEmptyPayload();
+        if (bytes.length == 0)
+            throw new BuzzEmptyPayload();
         this.bytes = bytes;
     }
 
@@ -29,9 +30,9 @@ public class ByteStream {
 
     public byte at(int pos) {
         if (pos >= bytes.length) {
-            throw new BuzzStreamOverflow();
+            throw new BuzzStreamOverflow(pos, bytes.length - 1);
         } else if (pos < 0) {
-            throw new BuzzStreamUnderflow();
+            throw new BuzzStreamUnderflow(pos);
         }
         return this.bytes[pos];
     }

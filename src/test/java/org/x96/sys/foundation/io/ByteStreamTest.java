@@ -15,17 +15,17 @@ public class ByteStreamTest {
     @Test
     void happyRaw() {
         ByteStream inputStream = ByteStream.raw("ab".getBytes());
-        assert inputStream.length() == 2;
-        assert inputStream.at(0) == 0x61;
-        assert inputStream.at(1) == 0x61;
+        assertTrue(inputStream.length() == 2);
+        assertTrue(inputStream.at(0) == 0x61);
+        assertTrue(inputStream.at(1) == 0x62);
     }
 
     @Test
     void happyWrapped() {
         ByteStream inputStream = ByteStream.wrapped(new byte[] {});
-        assert inputStream.length() == 2;
-        assert inputStream.at(0) == 0x2;
-        assert inputStream.at(1) == 0x3;
+        assertTrue(inputStream.length() == 2);
+        assertTrue(inputStream.at(0) == 0x2);
+        assertTrue(inputStream.at(1) == 0x3);
     }
 
     @Test
@@ -33,26 +33,40 @@ public class ByteStreamTest {
         var e = assertThrows(BuzzEmptyPayload.class, () -> ByteStream.raw(new byte[] {}));
         assertEquals(
                 """
-                \uD83E\uDD95 [0xF1]
-                \uD83D\uDC1D [BuzzEmptyPayload]
-                \uD83C\uDF35 > ByteStream vazia 🙅\
-                """,
+                        \uD83E\uDD95 [0xF1]
+                        \uD83D\uDC1D [BuzzEmptyPayload]
+                        \uD83C\uDF35 > ByteStream can not be empty 🙅""",
                 e.getLocalizedMessage());
     }
 
     @Test
     void happyBuzzStreamOverflow() {
-        ByteStream inputStream = ByteStream.raw(new byte[] {0x78});
-        assert inputStream.length() == 2;
-        assert inputStream.at(0) == 0x78;
+        ByteStream inputStream = ByteStream.raw(new byte[] { 0x78 });
+        assertTrue(inputStream.length() == 1);
+        assertTrue(inputStream.at(0) == 0x78);
         var e = assertThrows(BuzzStreamOverflow.class, () -> inputStream.at(1));
+        assertEquals(
+                """
+                        \uD83E\uDD95 [0xF2]
+                        \uD83D\uDC1D [BuzzStreamOverflow]
+                        \uD83C\uDF35 > Access beyond bounds.
+                        > Limit: 0
+                        > Attempted index: 1""",
+                e.getLocalizedMessage());
     }
 
     @Test
     void happyBuzzStreamOverflow2() {
-        ByteStream inputStream = ByteStream.raw(new byte[] {0x0});
-        assert inputStream.length() == 1;
+        ByteStream inputStream = ByteStream.raw(new byte[] { 0x0 });
+        assertTrue(inputStream.length() == 1);
         var e = assertThrows(BuzzStreamUnderflow.class, () -> inputStream.at(-1));
+        assertEquals(
+                """
+                        \uD83E\uDD95 [0xF3]
+                        \uD83D\uDC1D [BuzzStreamUnderflow]
+                        \uD83C\uDF35 > Access before start.
+                        > Attempted index: -1""",
+                e.getLocalizedMessage());
     }
 
     @Test

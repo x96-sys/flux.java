@@ -6,6 +6,6 @@ public class BuzzEmptyPayload extends Buzz {
     private static final int CODE = 0xF1;
 
     public BuzzEmptyPayload() {
-        super(CODE, BuzzEmptyPayload.class.getSimpleName(), "ByteStream vazia 🙅");
+        super(CODE, BuzzEmptyPayload.class.getSimpleName(), "ByteStream can not be empty 🙅");
     }
 }
