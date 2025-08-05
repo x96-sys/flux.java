@@ -33,6 +33,12 @@ command-line interface (CLI) for interactive byte manipulation.
 make
 ```
 
+### run
+
+```bash
+make run ARGS="sofi_ceci"
+```
+
 ### build && test
 
 ```bash
