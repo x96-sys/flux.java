@@ -1,0 +1,51 @@
+@startuml
+!theme plain
+
+actor Test
+
+participant "ByteStream" as IS
+participant "BuzzEmptyPayload" as BEP
+participant "BuzzStreamOverflow" as BSO
+participant "BuzzStreamUnderflow" as BSU
+
+== Criação de ByteStream (payload válido) ==
+Test -> IS : ByteStream.raw(new byte[]{0x41, 0x42})
+activate IS
+IS --> Test : instância criada
+deactivate IS
+
+== Leitura válida ==
+Test -> IS : at(0)
+IS --> Test : 0x41
+
+== Leitura além do fim ==
+Test -> IS : at(2)
+activate IS
+IS -> BSO : throw BuzzStreamOverflow()
+activate BSO
+BSO --> IS
+IS --> Test : exception
+deactivate BSO
+deactivate IS
+
+== Criação com payload vazio ==
+Test -> IS : ByteStream.raw(new byte[]{})
+activate IS
+IS -> BEP : throw BuzzEmptyPayload()
+activate BEP
+BEP --> IS
+IS --> Test : exception
+deactivate BEP
+deactivate IS
+
+== Leitura negativa ==
+Test -> IS : at(-1)
+activate IS
+IS -> BSU : throw BuzzStreamUnderflow()
+activate BSU
+BSU --> IS
+IS --> Test : exception
+deactivate BSU
+deactivate IS
+
+@enduml
